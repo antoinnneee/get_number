@@ -3,12 +3,16 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "GNL_NOFD/libft/includes/libft.h"
 
-void main(int a, char **b)
+int main(int a, char **b)
 {
 	int fd;
-
+	int	**tab;
+	a = 0;
 	fd = open(b[1], O_RDONLY);
-	ft_putnbrnl(fd);
-	get_number(fd);	
+	tab = get_number(fd);
+	ft_putstr("print tab : \n");
+	print_map_number(tab);
+	return (0);
 }

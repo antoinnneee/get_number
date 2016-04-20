@@ -1,6 +1,17 @@
 #include "get_number.h"
-#include "GetNextLine/get_next_line.h"
-#include "GetNextLine/libft/includes/libft.h"
+#include "GNL_NOFD/get_next_line.h"
+#include "GNL_NOFD/libft/includes/libft.h"
+
+static int	*initfirst(int chose)
+{
+	int	count;
+	int	*dim;
+
+	count = 0;
+	dim = (int*) ft_memalloc(sizeof(int) * (count + 1));
+		dim[count] = chose;
+		return (dim);
+}
 
 static int	*get_dim(const char *line)
 {
@@ -10,15 +21,13 @@ static int	*get_dim(const char *line)
 	int	cursor;
 	int	tmpcursor;
 
-	count = 0;
-	cursor = 0;
-	tmpcursor = 0;
-	dim = (int*) ft_memalloc(sizeof(int) * (count + 1));
+	ft_initthreevar(&count, &cursor, &tmpcursor);
 	while(line[cursor] != 0)
 	{
-		if (ft_isdigit(line[cursor]))
+		if (ft_isdigit(line[cursor]) || (line[cursor] == '-' && ft_isdigit(line[cursor + 1])))
 		{
 			tmpcursor = cursor;
+			cursor++;
 			while(ft_isdigit(line[cursor]))
 				cursor++;
 			count++;
@@ -30,63 +39,53 @@ static int	*get_dim(const char *line)
 			dim = (int*) ft_memalloc(sizeof(int) * (count + 2));
 			ft_memmove(dim, buffer, sizeof(int) * count);
 		}
-		dim[count-1] = ft_atoi(ft_strsub(line, tmpcursor, cursor - tmpcursor));
+		dim[count] = ft_atoi(ft_strsub(line, tmpcursor, cursor - tmpcursor));
 		cursor++;
 	}
-	dim[count] = ft_atoi(ft_strsub(line, tmpcursor, cursor - tmpcursor));
+	dim[count + 1] = ft_atoi(ft_strsub(line, tmpcursor, cursor - tmpcursor));
+	dim[0] = count;
 	return (dim);
 }
 
-int **get_number(int fd)
+void		print_map_number(int **arraynum)
+{
+	int	index;
+	int	line;
+
+	index = 1;
+	line = 1;
+	while (line < arraynum[0][0])
+	{
+		while (index < (arraynum[line][0]))
+		{
+			ft_putnbr(arraynum[line][index]);
+			ft_putchar(' ');
+			index++;
+		}
+		ft_putchar('\n');
+		index = 1;
+		line++;
+	}
+}
+
+int			**get_number(int fd)
 {
 	int	**tabnumber;
 	int	**buffer;
 	char	*line;
 	int	nbline;
 	
-	nbline = 0;
-	tabnumber = (int**) ft_memalloc(sizeof(int*) * (nbline + 1));
+	nbline = 1;
 	while(get_next_line(fd, &line) == 1)
 	{
-		if (nbline > 0)
-		{
-			buffer = (int**) ft_memalloc(sizeof(int*) * (nbline));
-			ft_memmove(buffer, tabnumber, sizeof(int*) * nbline);
-			tabnumber = (int**) ft_memalloc(sizeof(int*) * (nbline + 1));
-			ft_memmove(tabnumber, buffer, sizeof(int*) * nbline );
-		}
-		tabnumber[nbline] = get_dim(ft_strtrim(line));
+		buffer = (int**) ft_memalloc(sizeof(int*) * (nbline + 1));
+		ft_memmove(buffer, tabnumber, sizeof(int*) * nbline + 1);
+		tabnumber = (int**) ft_memalloc(sizeof(int*) * (nbline + 2));
+		ft_memmove(tabnumber, buffer, sizeof(int*) * nbline + 1);
+		tabnumber[nbline ] = get_dim(ft_strtrim(line));
 		nbline++;
-	
 	}
-	int k = 0;
-	while (k < 3)
-	{	
-		ft_putnbr(tabnumber[0][k]);ft_putchar('-');
-		k++;
-	}
-	k = 0;
-	ft_putchar('\n');
-	while (k < 3)
-	{	
-		ft_putnbr(tabnumber[1][k]);ft_putchar('-');
-		k++;
-	}
-	k = 0;
-	ft_putchar('\n');
-	while (k < 3)
-	{	
-		ft_putnbr(tabnumber[2][k]);ft_putchar('-');
-		k++;
-	}
-	ft_putchar('\n');
-/*
-	while (k-- >= 0)
-	ft_putnbr(tabnumber[1][k]);
-	k = 3;
-	while (k-- >= 0)
-	ft_putnbr(tabnumber[2][k]);
-*/
+	tabnumber[0] = initfirst(nbline);
 	return (tabnumber);
 }
 
