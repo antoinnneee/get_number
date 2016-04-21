@@ -12,7 +12,14 @@ int main(int a, char **b)
 	a = 0;
 	fd = open(b[1], O_RDONLY);
 	tab = get_number(fd);
+	if (tab)
+	{
 	ft_putstr("print tab : \n");
 	print_map_number(tab);
+	}
+	else
+	{
+		ft_putendl("Error Map");
+	}
 	return (0);
 }

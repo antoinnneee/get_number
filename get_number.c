@@ -59,7 +59,7 @@ void		print_map_number(int **arraynum)
 	line = 1;
 	while (line < arraynum[0][0])
 	{
-		while (index < (arraynum[line][0]))
+		while (index <= (arraynum[line][0]))
 		{
 			ft_putnbr(arraynum[line][index]);
 			ft_putchar(' ');
@@ -77,9 +77,11 @@ int			contain_letter(const char *line)
 	i = 0;
 	while (line[i] != 0)
 	{
-		if (ft_isalpha(line[i]) == 1)
+		if (ft_isalpha(line[i]) == 1 || line[1] == '+')
+		{
 			return (1);
-		else
+		}
+			else
 			i++;
 	}
 	return (0);
@@ -91,7 +93,7 @@ int			**get_number(int fd)
 	int	**buffer;
 	char	*line;
 	int	nbline;
-	
+
 	nbline = 1;
 	while(get_next_line(fd, &line) == 1)
 	{
