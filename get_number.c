@@ -6,7 +6,7 @@
 /*   By: abureau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/21 12:37:28 by abureau           #+#    #+#             */
-/*   Updated: 2016/04/21 16:30:18 by abureau          ###   ########.fr       */
+/*   Updated: 2016/04/22 15:17:06 by abureau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ static int	*get_dim(const char *ln)
 	ft_initthreevar(&count, &cur, &tmpcursor);
 	while (ln[cur] != 0)
 	{
-		if (ft_isdigit(ln[cur]) || (ln[cur] == '-' && ft_isdigit(ln[cur + 1])))
+		if (ft_issignednumber(ln[cur]))
 		{
+			
 			tmpcursor = cur;
-			cur++;
-			while (ft_isdigit(ln[cur]) || ln[cur] == '-')
+			while(ft_issignednumber(ln[cur]))
 				cur++;
 			count++;
 		}
@@ -70,7 +70,7 @@ int			**get_number(int fd)
 	nbline = 1;
 	while (get_next_line(fd, &line) == 1)
 	{
-		if (contain_letter(line))
+		if (!parse_number(line))
 			return (NULL);
 		buffer = (int**)ft_memalloc(sizeof(int*) * (nbline + 1));
 		ft_memmove(buffer, tabnumber, sizeof(int*) * nbline + 1);
